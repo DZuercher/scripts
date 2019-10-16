@@ -12,7 +12,7 @@
 ############################################################
 
 #name of the workspace
-name='/cluster/home/dominikz/20191014_DR1_MCCL_MAP_COMPARISON'
+name='20191014_des_non_gaussian_t025'
 
 #author
 author="Dominik Zuercher"
@@ -21,7 +21,7 @@ author="Dominik Zuercher"
 git_repos=('git@cosmo-gitlab.phys.ethz.ch:cosmo/esub.git' '-b modular git@cosmo-gitlab.phys.ethz.ch:DZuercher/UStats.git' 'git@cosmo-gitlab.phys.ethz.ch:rsgier/ECl.git')
 
 #virtual python environement
-venv='/cluster/home/dominikz/venv_3.6.1'
+venv='venv_3.6.1'
 
 #modules to load (if on euler)
 modules=('new' 'python/3.6.1' 'intel/2018.1' 'gcc/4.8.2' 'open_mpi/3.0.0')
@@ -29,7 +29,7 @@ modules=('new' 'python/3.6.1' 'intel/2018.1' 'gcc/4.8.2' 'open_mpi/3.0.0')
 ############################################################3
 
 function append_python_path {
-    for i in $( ls -d repos/*/ );
+    for i in $( ls -d $1/repos/*/ );
     do
         printf "Adding repository $i to PYTHONPATH variable \n"
         export PYTHONPATH=$i:$PYTHONPATH
@@ -112,7 +112,7 @@ then
     clone_repos
     cd ..
 
-    append_python_path
+    append_python_path ${name}
 
     printf $"pip freeze: \n" >> environement
     pip freeze >> environement
@@ -132,7 +132,7 @@ then
 
     cd ${name}
 
-    append_python_path
+    append_python_path ${name}
 
 fi
 
