@@ -14,7 +14,7 @@
 ############################################################
 
 # name of the workspace
-name='workspace_dir'
+name='/home/dominik/Documents/repos/test/workspace_dir'
 
 # author
 author="Dominik Zuercher"
@@ -46,6 +46,17 @@ function init_repos {
     do
         printf "Building ${repo} \n"
         cd $repo
+        
+        # adding exception for PyCosmo which
+        # needs build of C modules
+        if [ "$repo" == "PyCosmo/" ];
+        then
+          printf "C library \n"
+          pip install numpy
+          pip install Cython
+          python setup.py develop
+        fi
+
         pip install -e .
         cd ..
     done
