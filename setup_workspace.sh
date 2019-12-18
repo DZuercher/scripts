@@ -20,10 +20,13 @@ name='workspace_dir'
 author="Dominik Zuercher"
 
 # git directories to clone
-git_repos=('git@cosmo-gitlab.phys.ethz.ch:cosmo/esub.git' 'git@cosmo-gitlab.phys.ethz.ch:DZuercher/des_non_gaussian.git' 'git@cosmo-gitlab.phys.ethz.ch:DZuercher/estats.git' 'git@cosmo-gitlab.phys.ethz.ch:DZuercher/ekit.git' 'git@cosmo-gitlab.phys.ethz.ch:rsgier/ECl.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/UFalcon.git' '-b 11-test-intrinsic-alignments git@cosmo-gitlab.phys.ethz.ch:cosmo/PyCosmo.git')
+git_repos=('git@cosmo-gitlab.phys.ethz.ch:cosmo/ethz-des-mccl.git' 'git@cosmo-gitlab.phys.ethz.ch:rsgier/ECl.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/ucat.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/ufig.git' '-b 11-test-intrinsic-alignments git@cosmo-gitlab.phys.ethz.ch:cosmo/PyCosmo.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/esub.git')
 
 # modules to load (if on euler)
 modules=('new' 'python/3.7.1' 'intel/2018.1' 'gcc/4.8.2' 'open_mpi/3.0.0')
+
+# python binary
+py_bin='python'
 
 ############################################################3
 
@@ -54,7 +57,7 @@ function init_repos {
           printf "C library \n"
           pip install numpy
           pip install Cython
-          python setup.py develop
+          ${py_bin} setup.py develop
         fi
 
         pip install -e .
@@ -115,7 +118,7 @@ then
     fi
 
     # create virtual environment
-    python -m venv env
+    ${py_bin} -m venv env
 
     # activating the environment
     activate_env
