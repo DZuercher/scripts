@@ -5,7 +5,7 @@
 # creates a workspace when argument initialize is given
 # eg ./setup_workspace.sh initialize [euler]
 
-# if argument is activate, activates the environement
+# if argument is activate, activates the environment
 # eg .setup_workspace.sh activate [euler]
 
 # if second argument is euler loads the modules specified in modules
@@ -28,8 +28,8 @@ modules=('new' 'python/3.6.1' 'intel/2018.1' 'gcc/4.8.2' 'open_mpi/3.0.0')
 ############################################################3
 
 function activate_env {
-    # source virtual environement
-    printf "Activating virtual python environement env \n"
+    # source virtual environment
+    printf "Activating virtual python environment env \n"
     source env/bin/activate
 }
 
@@ -88,11 +88,11 @@ then
     cd ${name}
 
     # create doc files
-    printf "Creating files README, pipe and environement \n"
+    printf "Creating files README, pipe and environment \n"
     printf "Author: ${author}" >> README
     printf "Author: ${author}" >> pipe 
 
-    touch environement
+    touch environment
 
     # Load modules on demand
     if [ "$2" == "euler" ];
@@ -116,8 +116,8 @@ then
     init_repos
     cd ..
 
-    printf $"pip freeze: \n" >> environement
-    pip freeze >> environement
+    printf $"pip freeze: \n" >> environment
+    pip freeze >> environment
 
 elif [ "$1" == "activate" ];
 then
