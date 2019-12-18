@@ -14,16 +14,16 @@
 ############################################################
 
 # name of the workspace
-name='/home/dominik/Documents/repos/test/workspace_dir'
+name='workspace_dir'
 
 # author
 author="Dominik Zuercher"
 
 # git directories to clone
-git_repos=('git@cosmo-gitlab.phys.ethz.ch:DZuercher/des_non_gaussian.git' '-b 11-test-intrinsic-alignments git@cosmo-gitlab.phys.ethz.ch:cosmo/PyCosmo.git')
+git_repos=('git@cosmo-gitlab.phys.ethz.ch:cosmo/esub.git' 'git@cosmo-gitlab.phys.ethz.ch:DZuercher/des_non_gaussian.git' 'git@cosmo-gitlab.phys.ethz.ch:DZuercher/estats.git' 'git@cosmo-gitlab.phys.ethz.ch:DZuercher/ekit.git' 'git@cosmo-gitlab.phys.ethz.ch:rsgier/ECl.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/UFalcon.git' '-b 11-test-intrinsic-alignments git@cosmo-gitlab.phys.ethz.ch:cosmo/PyCosmo.git')
 
 # modules to load (if on euler)
-modules=('new' 'python/3.6.1' 'intel/2018.1' 'gcc/4.8.2' 'open_mpi/3.0.0')
+modules=('new' 'python/3.7.1' 'intel/2018.1' 'gcc/4.8.2' 'open_mpi/3.0.0')
 
 ############################################################3
 
@@ -46,7 +46,7 @@ function init_repos {
     do
         printf "Building ${repo} \n"
         cd $repo
-        
+
         # adding exception for PyCosmo which
         # needs build of C modules
         if [ "$repo" == "PyCosmo/" ];
@@ -101,14 +101,17 @@ then
     # create doc files
     printf "Creating files README, pipe and environment \n"
     printf "Author: ${author}" >> README
-    printf "Author: ${author}" >> pipe 
+    printf "Author: ${author} \n \n" >> pipe
+    printf "######################## VARIABLES ################## \n" >> pipe
+    printf '%s\n' '- parameters:' >> pipe
+    printf '%s\n' '  - source_file: source/source_esub.sh' >> pipe
 
     touch environment
 
     # Load modules on demand
     if [ "$2" == "euler" ];
     then
-        load_modules log 
+        load_modules log
     fi
 
     # create virtual environment
@@ -123,12 +126,21 @@ then
     mkdir source
     mkdir repos
 
+    # write esub source file
+    printf "Writing esub source file \n"
+    printf 'export ESUB_LOCAL_SCRATCH=$TMPDIR' >> source/source_esub.sh
+    printf "\n" >> source/source_esub.sh
+    printf 'export SUBMIT_DIR=`pwd`' >> source/source_esub.sh
+
     cd repos
     init_repos
     cd ..
 
     printf $"pip freeze: \n" >> environment
     pip freeze >> environment
+
+    # source esub file
+    source source/source_esub.sh
 
 elif [ "$1" == "activate" ];
 then
@@ -145,5 +157,7 @@ then
 
     activate_env
 
+    # source esub file
+    source source/source_esub.sh
 fi
 
