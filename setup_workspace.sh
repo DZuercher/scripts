@@ -73,16 +73,16 @@ function load_modules {
         printf "Loading module ${module} \n"
         module load ${module}
 
-        # append modules to environement
+        # append modules to environment
         if [ "$1" == "log" ];
         then
-            printf $module >> environement
+            printf $module >> environment
         fi
     done
 
     if [ "$1" == "log" ];
     then
-        printf "\n \n" >> environement
+        printf "\n \n" >> environment
     fi
 }
 
