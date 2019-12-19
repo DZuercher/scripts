@@ -30,10 +30,12 @@ py_bin='python'
 
 ############################################################3
 
+env_name="$(basename -- $name)"
+
 function activate_env {
     # source virtual environment
     printf "Activating virtual python environment env \n"
-    source env/bin/activate
+    source env_${env_name}/bin/activate
 }
 
 function init_repos {
@@ -118,7 +120,7 @@ then
     fi
 
     # create virtual environment
-    ${py_bin} -m venv env
+    ${py_bin} -m venv env_${env_name}
 
     # activating the environment
     activate_env
