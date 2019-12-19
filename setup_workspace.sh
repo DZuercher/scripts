@@ -27,15 +27,15 @@ modules=('new' 'python/3.7.1' 'intel/2018.1' 'gcc/4.8.2' 'open_mpi/3.0.0')
 
 # python binary
 py_bin='python'
+# pip binary
+pip_bin='pip'
 
 ############################################################3
-
-env_name="$(basename -- $name)"
 
 function activate_env {
     # source virtual environment
     printf "Activating virtual python environment env \n"
-    source env_${env_name}/bin/activate
+    source env/bin/activate
 }
 
 function init_repos {
@@ -57,12 +57,12 @@ function init_repos {
         if [ "$repo" == "PyCosmo/" ];
         then
           printf "C library \n"
-          pip install numpy
-          pip install Cython
+          ${pip_bin} install numpy
+          ${pip_bin} install Cython
           ${py_bin} setup.py develop
         fi
 
-        pip install -e .
+        ${pip_bin} install -e .
         cd ..
     done
 }
@@ -120,7 +120,7 @@ then
     fi
 
     # create virtual environment
-    ${py_bin} -m venv env_${env_name}
+    ${py_bin} -m venv env
 
     # activating the environment
     activate_env
@@ -142,7 +142,7 @@ then
     cd ..
 
     printf $"pip freeze: \n" >> environment
-    pip freeze >> environment
+    ${pip_bin} freeze >> environment
 
     # source esub file
     source source/source_esub.sh
