@@ -68,24 +68,44 @@ function init_repos {
 }
 
 function load_modules {
-   for module in "${modules[@]}";
-   do
-        printf "Loading module ${module} \n"
-        module load ${module}
+    # loads the modules on euler
+    for module in "${modules[@]}";
+    do
+         printf "Loading module ${module} \n"
+         module load ${module}
 
-        # append modules to environment
-        if [ "$1" == "log" ];
-        then
-            printf $module >> environment
-        fi
-    done
+         # append modules to environment
+         if [ "$1" == "log" ];
+         then
+             printf $module >> environment
+         fi
+     done
 
-    if [ "$1" == "log" ];
-    then
-        printf "\n \n" >> environment
-    fi
+     if [ "$1" == "log" ];
+     then
+         printf "\n \n" >> environment
+     fi
 }
 
+function write_esub_source_file {
+    # writes the esub source file automatically
+    printf "Writing esub source file \n"
+    if [ "$1" == "euler" ];
+    then
+      for module in "${modules[@]}";
+      do
+        printf "module load ${module} \n" >> source/source_esub.sh
+      done
+      printf "\n \n" >> source/source_esub.sh
+    fi
+
+    printf 'export ESUB_LOCAL_SCRATCH=$TMPDIR' >> source/source_esub.sh
+    printf "\n" >> source/source_esub.sh
+    printf 'export SUBMIT_DIR=`pwd`' >> source/source_esub.sh
+
+}
+
+# intialize workspace
 if [ "$1" == "initialize" ];
 then
 
@@ -132,10 +152,7 @@ then
     mkdir repos
 
     # write esub source file
-    printf "Writing esub source file \n"
-    printf 'export ESUB_LOCAL_SCRATCH=$TMPDIR' >> source/source_esub.sh
-    printf "\n" >> source/source_esub.sh
-    printf 'export SUBMIT_DIR=`pwd`' >> source/source_esub.sh
+    write_esub_source_file $2
 
     cd repos
     init_repos
@@ -147,6 +164,7 @@ then
     # source esub file
     source source/source_esub.sh
 
+# activate workspace
 elif [ "$1" == "activate" ];
 then
 
