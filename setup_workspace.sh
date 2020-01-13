@@ -14,16 +14,17 @@
 ############################################################
 
 # name of the workspace
-name='workspace_dir'
+name='/cluster/work/refregier/dominikz/t034__test_weights_no_multi_ridge_highsig'
 
 # author
 author="Dominik Zuercher"
 
 # git directories to clone
-git_repos=('git@cosmo-gitlab.phys.ethz.ch:cosmo/ethz-des-mccl.git' 'git@cosmo-gitlab.phys.ethz.ch:rsgier/ECl.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/ucat.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/ufig.git' '-b 11-test-intrinsic-alignments git@cosmo-gitlab.phys.ethz.ch:cosmo/PyCosmo.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/esub.git')
+# NOTE: Depending on requirements (example PyComso Cython requirement) order might matter!
+git_repos=('git@cosmo-gitlab.phys.ethz.ch:cosmo/ethz-des-mccl.git' 'git@cosmo-gitlab.phys.ethz.ch:rsgier/ECl.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/ucat.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/ufig.git' '-b 11-test-intrinsic-alignments git@cosmo-gitlab.phys.ethz.ch:cosmo/PyCosmo.git' '-b fixing_logic git@cosmo-gitlab.phys.ethz.ch:cosmo/esub.git')
 
 # modules to load (if on euler)
-modules=('new' 'python/3.7.1' 'intel/2018.1' 'gcc/4.8.2' 'open_mpi/3.0.0')
+modules=('new' 'python/3.6.1' 'intel/2018.1' 'gcc/4.8.4' 'open_mpi/3.0.0')
 
 # python binary
 py_bin='python'
@@ -31,6 +32,22 @@ py_bin='python'
 pip_bin='pip'
 
 ############################################################3
+function gen_source_file {
+    printf "Writing esub source file \n"
+
+    # modules
+    for module in "${modules[@]}";
+    do
+        printf "module load ${module} \n" >> source/source_esub.sh
+    done
+
+    # activate environment
+    printf "source ${name}/env/bin/activate \n" >> source/source_esub.sh
+
+    printf 'export ESUB_LOCAL_SCRATCH=$TMPDIR' >> source/source_esub.sh
+    printf "\n" >> source/source_esub.sh
+    printf 'export SUBMIT_DIR=`pwd`' >> source/source_esub.sh
+}
 
 function activate_env {
     # source virtual environment
@@ -60,52 +77,35 @@ function init_repos {
           ${pip_bin} install numpy
           ${pip_bin} install Cython
           ${py_bin} setup.py develop
+          ${py_bin} setup.py install
+          export PYTHONPATH=${PYTHONPATH}:${name}/repos/PyCosmo
+        else
+            ${pip_bin} install -e .
         fi
 
-        ${pip_bin} install -e .
         cd ..
     done
 }
 
 function load_modules {
-    # loads the modules on euler
-    for module in "${modules[@]}";
-    do
-         printf "Loading module ${module} \n"
-         module load ${module}
+   for module in "${modules[@]}";
+   do
+        printf "Loading module ${module} \n"
+        module load ${module}
 
-         # append modules to environment
-         if [ "$1" == "log" ];
-         then
-             printf $module >> environment
-         fi
-     done
+        # append modules to environment
+        if [ "$1" == "log" ];
+        then
+            printf $module >> environment
+        fi
+    done
 
-     if [ "$1" == "log" ];
-     then
-         printf "\n \n" >> environment
-     fi
-}
-
-function write_esub_source_file {
-    # writes the esub source file automatically
-    printf "Writing esub source file \n"
-    if [ "$1" == "euler" ];
+    if [ "$1" == "log" ];
     then
-      for module in "${modules[@]}";
-      do
-        printf "module load ${module} \n" >> source/source_esub.sh
-      done
-      printf "\n \n" >> source/source_esub.sh
+        printf "\n \n" >> environment
     fi
-
-    printf 'export ESUB_LOCAL_SCRATCH=$TMPDIR' >> source/source_esub.sh
-    printf "\n" >> source/source_esub.sh
-    printf 'export SUBMIT_DIR=`pwd`' >> source/source_esub.sh
-
 }
 
-# intialize workspace
 if [ "$1" == "initialize" ];
 then
 
@@ -152,7 +152,7 @@ then
     mkdir repos
 
     # write esub source file
-    write_esub_source_file $2
+    gen_source_file
 
     cd repos
     init_repos
@@ -164,7 +164,6 @@ then
     # source esub file
     source source/source_esub.sh
 
-# activate workspace
 elif [ "$1" == "activate" ];
 then
 
@@ -179,6 +178,8 @@ then
     cd ${name}
 
     activate_env
+
+    export PYTHONPATH=${PYTHONPATH}:${name}/repos/PyCosmo
 
     # source esub file
     source source/source_esub.sh
