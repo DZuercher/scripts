@@ -42,28 +42,26 @@ function gen_source_file {
 
     # activate environment
     printf "source ${name}/env/bin/activate \n" >> source/source_esub.sh
-
-    printf 'export ESUB_LOCAL_SCRATCH=$TMPDIR' >> source/source_esub.sh
-    printf "\n" >> source/source_esub.sh
-    printf 'export SUBMIT_DIR=`pwd`' >> source/source_esub.sh
+    printf 'export ESUB_LOCAL_SCRATCH=$TMPDIR \n' >> source/source_esub.sh
+    printf 'export SUBMIT_DIR=`pwd` \n' >> source/source_esub.sh
 
     if [ "$1" == "euler" ];
     then
         # Allow parallelisation on euler
-        printf 'if [[ -z "${LSB_MAX_NUM_PROCESSORS}" ]]; \n'      
-        printf 'then \n'
-        printf '    export OMP_NUM_THREADS=1 \n'
-        printf '    export OPENBLAS_NUM_THREADS=1 \n'
-        printf '    export MKL_NUM_THREADS=1 \n'
-        printf '    export VECLIB_MAXIMUM_THREADS=1 \n'
-        printf '    export NUMEXPR_NUM_THREADS=1 \n'
-        printf 'else \n'
-        printf '    export OMP_NUM_THREADS=${LSB_MAX_NUM_PROCESSORS} \n'
-        printf '    export OPENBLAS_NUM_THREADS=${LSB_MAX_NUM_PROCESSORS} \n'
-        printf '    export MKL_NUM_THREADS=${LSB_MAX_NUM_PROCESSORS} \n'
-        printf '    export VECLIB_MAXIMUM_THREADS=${LSB_MAX_NUM_PROCESSORS} \n'
-        printf '    export NUMEXPR_NUM_THREADS=${LSB_MAX_NUM_PROCESSORS} \n'
-        printf 'fi'
+        printf 'if [[ -z "${LSB_MAX_NUM_PROCESSORS}" ]]; \n' >> source/source_esub.sh
+        printf 'then \n' >> source/source_esub.sh
+        printf '    export OMP_NUM_THREADS=1 \n' >> source/source_esub.sh
+        printf '    export OPENBLAS_NUM_THREADS=1 \n' >> source/source_esub.sh
+        printf '    export MKL_NUM_THREADS=1 \n' >> source/source_esub.sh
+        printf '    export VECLIB_MAXIMUM_THREADS=1 \n' >> source/source_esub.sh
+        printf '    export NUMEXPR_NUM_THREADS=1 \n' >> source/source_esub.sh
+        printf 'else \n' >> source/source_esub.sh
+        printf '    export OMP_NUM_THREADS=${LSB_MAX_NUM_PROCESSORS} \n' >> source/source_esub.sh
+        printf '    export OPENBLAS_NUM_THREADS=${LSB_MAX_NUM_PROCESSORS} \n' >> source/source_esub.sh
+        printf '    export MKL_NUM_THREADS=${LSB_MAX_NUM_PROCESSORS} \n' >> source/source_esub.sh
+        printf '    export VECLIB_MAXIMUM_THREADS=${LSB_MAX_NUM_PROCESSORS} \n' >> source/source_esub.sh
+        printf '    export NUMEXPR_NUM_THREADS=${LSB_MAX_NUM_PROCESSORS} \n' >> source/source_esub.sh
+        printf 'fi' >> source/source_esub.sh
     fi
 }
 
