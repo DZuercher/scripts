@@ -14,14 +14,13 @@
 ############################################################
 
 # name of the workspace
-name='/cluster/work/refregier/dominikz/t034__test_weights_no_multi_ridge_highsig'
+name='<path to your workspace directory>'
 
 # author
 author="Dominik Zuercher"
 
 # git directories to clone
-# NOTE: Depending on requirements (example PyComso Cython requirement) order might matter!
-git_repos=('git@cosmo-gitlab.phys.ethz.ch:cosmo/ethz-des-mccl.git' 'git@cosmo-gitlab.phys.ethz.ch:rsgier/ECl.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/ucat.git' 'git@cosmo-gitlab.phys.ethz.ch:cosmo/ufig.git' '-b 11-test-intrinsic-alignments git@cosmo-gitlab.phys.ethz.ch:cosmo/PyCosmo.git' '-b fixing_logic git@cosmo-gitlab.phys.ethz.ch:cosmo/esub.git')
+git_repos=('-b wavelets git@cosmo-gitlab.phys.ethz.ch:cosmo_public/NGSF.git')
 
 # modules to load (if on euler)
 modules=('new' 'python/3.6.1' 'intel/2018.1' 'gcc/4.8.4' 'open_mpi/3.0.0')
